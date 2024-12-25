@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.repository == 'lumynou5/live-bun'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lumynou5/github-release-action@v1
+        with:
+          token: ${{github.token}}
+      - uses: oven-sh/setup-bun@v2
+      - run: bun publish --access public
+        env:
+          NPM_CONFIG_TOKEN: ${{secrets.NPM_TOKEN}}
