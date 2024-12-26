@@ -88,9 +88,7 @@ const server = Bun.serve({
       clients = clients.filter((x) => x !== ws);
       console.log(`Disconnected with ${ws.remoteAddress}`);
     },
-    message(ws, message) {
-      
-    }
+    message(ws, message) {},
   },
 });
 
