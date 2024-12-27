@@ -35,7 +35,7 @@ options.port ??= 8000;
 
 const injection = await Bun.file(`${import.meta.dir}/injection.html`).text();
 
-let clients = [];
+let clients = new Set();
 let watcher = watch(
   '.',
   { recursive: true }
@@ -81,11 +81,11 @@ const server = Bun.serve({
   },
   websocket: {
     open(ws) {
-      clients.push(ws);
+      clients.add(ws);
       console.log(`Connected with ${ws.remoteAddress}`);
     },
     close(ws, code, reason) {
-      clients = clients.filter((x) => x !== ws);
+      clients.delete(ws);
       console.log(`Disconnected with ${ws.remoteAddress}`);
     },
     message(ws, message) {},
