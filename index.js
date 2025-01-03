@@ -63,18 +63,18 @@ const server = Bun.serve({
     if (pathname === '/') {
       pathname = '/index.html';
     }
+    pathname = '.' + pathname;
 
-    const filePath = '.' + pathname;
-    const file = Bun.file(filePath);
+    let file = Bun.file(pathname);
     if (await file.exists()) {
-      let content = await file.bytes();
       if (file.type.includes('text/html')) {
         const textDecoder = new TextDecoder();
-        content = textDecoder.decode(content);
-        let idx = content.search(/<\/body>/i);
-        content = ''.concat(content.slice(0, idx), injection, content.slice(idx));
+        file = await file.bytes();
+        file = textDecoder.decode(file);
+        let idx = file.search(/<\/body>/i);
+        file = ''.concat(file.slice(0, idx), injection, file.slice(idx));
       }
-      return new Response(content, { headers: { 'Content-Type': file.type } });
+      return new Response(file, { headers: { 'Content-Type': file.type } });
     } else {
       return new Response('No such file or directory.', { status: 404 });
     }
